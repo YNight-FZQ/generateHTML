@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "insert": "node -r dotenv/config ./lib/insertData.mjs"
   },
   "dependencies": {
     "@tinymce/tinymce-react": "^5.0.1",
+    "@vercel/postgres": "^0.8.0",
+    "dotenv": "^16.4.5",
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18"

@@ -9,9 +9,12 @@ export default function Button({ id }) {
             })
                 .then((res) => res.json())
                 .then((res) => {
-                    console.log(res);
-                    alert("删除成功");
-                    location.reload();
+                    if (res.code === 404) {
+                        alert("删除失败");
+                    } else {
+                        alert("删除成功");
+                        location.reload();
+                    }
                 })
                 .catch((err) => {
                     console.log(err);

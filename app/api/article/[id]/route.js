@@ -1,40 +1,36 @@
-// import datas from '../data.json'
-// 'use server';
-
-import fs from 'fs'
-import path from 'path';
 import { NextResponse } from "next/server";
 import { formatTimestamp } from '@/lib'
-
+import { sql } from '@vercel/postgres';
 
 export async function PUT(request) {
-    const datas = JSON.parse(fs.readFileSync(path.join(process.cwd(), './public/data.json'), 'utf-8'))
     const { content, id } = await request.json()
     const update = formatTimestamp(Date.now())
-    const orginIndex = datas.findIndex(i => i.id === id)
-    const originData = datas[orginIndex]
+    const obj = await sql`SELECT * FROM articles WHERE id = ${id};`
 
-    datas.splice(orginIndex, 1, { ...originData, content, update })
-    fs.writeFileSync(path.join(process.cwd(), './public/data.json'), JSON.stringify(datas))
+    await sql`UPDATE articles
+    SET content = ${content}, update_date = ${update}
+    WHERE id = ${id};`
+
     console.log('PUT request:', id);
-    return NextResponse.json({ code: 200, data: { ...originData, content, update }, msg: 'success' })
+    return NextResponse.json({ code: 200, data: { ...obj, content, update }, msg: 'success' })
 }
 
-export function GET(request, { params: { id } }) {
-    const datas = JSON.parse(fs.readFileSync(path.join(process.cwd(), './public/data.json'), 'utf-8'))
+export async function GET(request, { params: { id } }) {
+    const obj = await sql`SELECT * FROM articles WHERE id = ${id};`
     console.log('GET request:', id);
-    return NextResponse.json({ code: 200, data: datas.find(i => i.id == id) || {}, msg: 'success' })
+    return NextResponse.json({ code: 200, data: obj.rows[0], msg: 'success' })
 }
 
-export function DELETE(request, { params: { id } }) {
-    const datas = JSON.parse(fs.readFileSync(path.join(process.cwd(), './public/data.json'), 'utf-8'))
-    const index = datas.findIndex(i => i.id === id)
-    const obj = datas[index]
-    if (obj.notDelete) {
-        return NextResponse.error()
+export async function DELETE(request, { params: { id } }) {
+    const objToDelete = await sql`SELECT * FROM articles WHERE id = ${id};`
+    if (!objToDelete.rowCount) {
+        return NextResponse.json({ code: 404, msg: 'Article not found' }, { status: 500 });
     }
-    datas.splice(index, 1)
-    fs.writeFileSync(path.join(process.cwd(), './public/data.json'), JSON.stringify(datas))
+    if (objToDelete.rows[0].not_delete) {
+        return NextResponse.json({ code: 404, msg: 'Article can not delete' }, { status: 500 });
+    }
+    await sql`DELETE FROM articles WHERE id = ${id};`
     console.log('DELETE request:', id);
-    return NextResponse.json({ code: 200, data: obj, msg: 'success' })
+    return NextResponse.json({ code: 200, data: objToDelete.rows, msg: 'Article deleted successfully' });
 }
+
