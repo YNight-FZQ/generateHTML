@@ -20,6 +20,7 @@ export default function EditorComponent({
                 ? `${process.env.NEXT_PUBLIC_API_URL}/api/article/${articleId}`
                 : `${process.env.NEXT_PUBLIC_API_URL}/api/article`;
 
+            console.log(url);
             const newTitle = title ? title : prompt("请输入文章标题");
 
             if (!newTitle) return alert("必须输入标题");
