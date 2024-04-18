@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import Link from "next/link";
 
@@ -82,6 +82,8 @@ export default function EditorComponent({
         }),
         []
     );
+
+    useEffect(() => { console.log('Editor onMounted');}, [])
 
     return (
         <div style={{ position: "relative" }}>
