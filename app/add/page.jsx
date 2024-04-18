@@ -1,23 +1,6 @@
-"use client";
-
-import dynamic from "next/dynamic";
-
-// 使用 dynamic 异步加载 tinymce 富文本编辑器组件
-const DynamicEditor = dynamic(() => import("@/app/ui/editor/Editor"), {
-    ssr: false,
-});
-
+import Editor from "@/app/ui/editor/Editor";
 const AddPage = () => {
-    const content = "";
-    const setContent = (newContent) => {
-        console.log(newContent);
-    };
-    
-    return (
-        <div>
-            <DynamicEditor content={content} onChange={setContent} />
-        </div>
-    );
+    return <Editor btnText='创建文章' />;
 };
 
 export default AddPage;

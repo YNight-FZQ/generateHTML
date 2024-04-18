@@ -2,8 +2,7 @@
 
 import React, { useCallback, useMemo, useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import Button from "../button/Button";
-import styles from "./styles.module.css";
+import Link from "next/link";
 
 export default function EditorComponent({
     btnText,
@@ -16,12 +15,14 @@ export default function EditorComponent({
     const log = useCallback(() => {
         if (editorRef.current) {
             const newContent = editorRef.current.editor.getContent();
+            if (!newContent) return alert("必须输入文章内容");
             const url = articleId
-                ? `http://localhost:3000/api/article/${articleId}`
-                : "http://localhost:3000/api/article";
+                ? `${process.env.NEXT_PUBLIC_API_URL}/api/article/${articleId}`
+                : `${process.env.NEXT_PUBLIC_API_URL}/api/article`;
 
             const newTitle = title ? title : prompt("请输入文章标题");
 
+            if (!newTitle) return alert("必须输入标题");
             fetch(url, {
                 method: articleId ? "PUT" : "POST",
                 body: JSON.stringify({
@@ -38,9 +39,6 @@ export default function EditorComponent({
                     alert("提交失败，请重试");
                 });
         }
-    }, []);
-    const back = useCallback(() => {
-        history.back();
     }, []);
 
     const initObject = useMemo(
@@ -85,19 +83,22 @@ export default function EditorComponent({
     );
 
     return (
-        <div className={styles.wrap}>
+        <div style={{ position: "relative" }}>
             <Editor
                 ref={editorRef}
                 tinymceScriptSrc="/tinymce/tinymce.min.js"
                 initialValue={content}
                 init={initObject}
             />
-            <Button
-                style={{ marginRight: "90px" }}
+            <div
+                style={{ marginRight: "140px" }}
+                className="special-btn"
                 onClick={log}
-                btnText={btnText}
+                data-title={btnText}
             />
-            <Button onClick={back} btnText="返回" />
+            <Link href="/">
+                <div className="special-btn" data-title="回到首页" />
+            </Link>
         </div>
     );
 }

@@ -5,11 +5,21 @@ async function Edit({ params: { id } }) {
         content,
         id: articleId,
         title,
-    } = await fetch(`http://localhost:3000/api/article/${id}`)
+    } = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${id}`)
         .then((res) => res.json())
         .then((res) => res.data)
-        .catch((err) => ({}));
-    return <Editor content={content} title={title} articleId={articleId} />;
+        .catch((err) => {
+            console.log("error:", err);
+            return {};
+        });
+    return (
+        <Editor
+            content={content}
+            title={title}
+            articleId={articleId}
+            btnText="更新文章"
+        />
+    );
 }
 
 export default Edit;

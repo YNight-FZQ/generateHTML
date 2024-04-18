@@ -1,9 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import Button from "./ui/button/Button";
+import Button from "./ui/delbutton/Button";
 
 const Home = async () => {
-    const data = await fetch("http://localhost:3000/api/article")
+    const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/`)
         .then((res) => res.json())
         .then((res) => res.data)
         .catch((err) => []);
@@ -13,9 +13,10 @@ const Home = async () => {
             <h1>
                 文章列表
                 <Link href="/add">
-                    <Button
-                        btnText="新增文章"
+                    <div
                         style={{ fontSize: "16px", top: "50px" }}
+                        className="special-btn"
+                        data-title="新增文章"
                     />
                 </Link>
             </h1>
@@ -33,13 +34,16 @@ const Home = async () => {
                             <td width={90}>{item.title}</td>
                             <td width={80}>{item.create}</td>
                             <td width={60}>{item.auth}</td>
-                            <td>{item.content}</td>
-                            <td width={80}>
+                            <td>
+                                <div className="spec-div">{item.content}</div>
+                            </td>
+                            <td width={100}>
                                 <div>
                                     <Link href={`/edit/${item.id}`}>编辑</Link>
                                     <Link href={`/preview/${item.id}`}>
                                         预览
                                     </Link>
+                                    <Button id={item.id} />
                                 </div>
                             </td>
                         </tr>
