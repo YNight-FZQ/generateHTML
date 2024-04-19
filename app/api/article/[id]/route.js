@@ -12,7 +12,7 @@ export async function PUT(request) {
     WHERE id = ${id};`
 
     console.log('PUT request:', id);
-    return NextResponse.json({ code: 200, data: { ...obj, content, update }, msg: 'success' })
+    return NextResponse.json({ code: 200, data: { ...obj.rows[0], content, update }, msg: 'success' })
 }
 
 export async function GET(request, { params: { id } }) {

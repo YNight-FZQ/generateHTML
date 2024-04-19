@@ -1,12 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Button from "./ui/delbutton/Button";
+import { sql } from "@vercel/postgres";
 
 const Home = async () => {
-    const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/`)
-        .then((res) => res.json())
-        .then((res) => res.data)
-        .catch((err) => []);
+    const data = await sql`SELECT * FROM articles ORDER BY create_date ASC`
 
     return (
         <div className="wrap">
@@ -24,16 +22,18 @@ const Home = async () => {
                 <tbody>
                     <tr>
                         <th>文章标题</th>
-                        <th>创建时间</th>
                         <th>文章作者</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
                         <th>文章内容</th>
                         <th>操作</th>
                     </tr>
-                    {data.map((item) => (
+                    {data.rows.map((item) => (
                         <tr key={item.id}>
                             <td width={90}>{item.title}</td>
-                            <td width={80}>{item.create}</td>
                             <td width={60}>{item.auth}</td>
+                            <td width={80}>{item.create_date}</td>
+                            <td width={80}>{item.update_date}</td>
                             <td>
                                 <div className="spec-div">{item.content}</div>
                             </td>
