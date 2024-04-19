@@ -1,17 +1,10 @@
 import Editor from "@/app/ui/editor/Editor";
+import { sql } from "@vercel/postgres";
 
 async function Edit({ params: { id } }) {
-    const {
-        content,
-        id: articleId,
-        title,
-    } = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/article/${id}`)
-        .then((res) => res.json())
-        .then((res) => res.data)
-        .catch((err) => {
-            console.log("error:", err);
-            return {};
-        });
+    const data = await sql`SELECT * FROM articles WHERE id = ${id}`;
+    const { content, title, id: articleId } = data?.rows?.[0] || {};
+
     return (
         <Editor
             content={content}

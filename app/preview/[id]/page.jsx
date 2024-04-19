@@ -1,13 +1,10 @@
 import Link from "next/link";
 import styles from "./styles.module.css";
+import { sql } from "@vercel/postgres";
 
 async function Edit({ params: { id } }) {
-    const { content, title } = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/article/${id}`
-    )
-        .then((res) => res.json())
-        .then((res) => res.data)
-        .catch((err) => ({}));
+    const data = await sql`SELECT * FROM articles WHERE id = ${id}`;
+    const { content, title } = data?.rows?.[0] || {};
 
     return (
         <div className={styles.wrap}>
