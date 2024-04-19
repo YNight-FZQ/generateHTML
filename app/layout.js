@@ -16,6 +16,8 @@ export const metadata = {
   description: "html code generate",
 };
 
+export const fetchCache = 'force-no-store';
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

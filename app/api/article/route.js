@@ -18,5 +18,5 @@ export async function POST(request) {
     VALUES (${id}, ${title}, ${auth}, ${content}, ${create}, '', ${false})
     `
     console.log('POST request');
-    return NextResponse.json({ code: 200, data: { content, title, id, auth, create }, msg: 'success' })
+    return NextResponse.json({ code: 200, data: { content, title, id, auth, create_date: create }, msg: 'success' })
 }
